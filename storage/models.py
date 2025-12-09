@@ -29,7 +29,6 @@ class Folder(models.Model):
     class Meta:
         verbose_name = _("folder")
         verbose_name_plural = _("folders")
-        abstract = True
 
 
 class File(models.Model):
@@ -52,3 +51,7 @@ class File(models.Model):
     owner = models.ForeignKey(_("owner"), User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("updated at"), auto_now=True)
+
+    class Meta:
+        verbose_name = _("file")
+        verbose_name_plural = _("files")

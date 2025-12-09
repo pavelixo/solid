@@ -76,6 +76,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+TASKS = {
+    "default": {
+        "BACKEND": "django.tasks.backends.immediate.ImmediateBackend"
+    }
+}
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
