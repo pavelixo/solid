@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "storages",
+    "authentication",
 ]
 
 MIDDLEWARE = [
@@ -50,8 +51,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "solid",
+        "USER": "admin",
+        "PASSWORD": "password",
+        "HOST": "localhost",
+        "PORT": 5432,
     }
 }
 
@@ -82,9 +87,20 @@ LOCALE_PATHS = [
     BASE_DIR / "locale",
 ]
 
-STATIC_URL = "static/"
+AUTH_USER_MODEL = "authentication.User"
 
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = None
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 AWS_ACCESS_KEY_ID = "admin"
 AWS_SECRET_ACCESS_KEY = "password"
@@ -94,3 +110,5 @@ AWS_S3_REGION_NAME = "us-east-1"
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
+AWS_S3_VERIFY = False
+AWS_S3_ADDRESSING_STYLE = "path"
