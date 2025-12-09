@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from contrib.validators import FileUpload
+
 from .base import AbstractUser, AbstractUserManager
 
 
@@ -63,3 +65,26 @@ class UserManager(AbstractUserManager):
         return self._create_user(username, email, password, **extra_fields)
 
 
+class User(AbstractUser):
+    """
+    Custom user model that extends the AbstractUser
+    to include additional fields such as display_username and avatar.
+    This model is designed to provide a more comprehensive representation
+    of a user in the application.
+    """
+
+    display_username = models.CharField(
+        _("display username"), max_length=64, editable=True, blank=False
+    )
+
+    file_upload = FileUpload("avatars")
+    avatar = models.ImageField(
+        _("avatar"), upload_to=file_upload, null=True, blank=True, editable=True
+    )
+
+    objects = UserManager()
+
+    class Meta:
+        db_table = "users"
+        verbose_name = "User"
+        verbose_name_plural = "Users"
