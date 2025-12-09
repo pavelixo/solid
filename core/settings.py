@@ -16,7 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "storages",  # django-storages
-    "django_tasks",
+    "django_tasks.backends.database",
     "authentication",
     "storage",
 ]

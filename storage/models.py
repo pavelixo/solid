@@ -6,12 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from authentication.models import User
 
 
-def hash():
-    return token_urlsafe(12)
-
-
 class Folder(models.Model):
-    id = models.CharField(primary_key=True, max_length=32, default=hash, editable=False)
+    id = models.CharField(primary_key=True, max_length=32, default=lambda: token_urlsafe(12), editable=False)
     name = models.CharField(_("name"), max_length=255)
     parent = models.ForeignKey(
         "self",
@@ -32,7 +28,7 @@ class Folder(models.Model):
 
 
 class File(models.Model):
-    id = models.CharField(primary_key=True, max_length=32, default=hash, editable=False)
+    id = models.CharField(primary_key=True, max_length=32, default=lambda: token_urlsafe(12), editable=False)
 
     folder = models.ForeignKey(
         Folder,
