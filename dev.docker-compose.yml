@@ -1,4 +1,17 @@
 services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: solid
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+
   storage:
     image: minio/minio
     command: server /data --console-address ":9001"
@@ -13,4 +26,5 @@ services:
       - storage:/data
 
 volumes:
+  data:
   storage:
