@@ -1,9 +1,13 @@
 from secrets import token_urlsafe
+
 from django.db import models
+
 from authentication.models import User
+
 
 def hash():
     return token_urlsafe(12)
+
 
 class Folder(models.Model):
     id = models.CharField(primary_key=True, max_length=32, default=hash, editable=False)
@@ -13,7 +17,7 @@ class Folder(models.Model):
         null=True,
         blank=True,
         related_name="subfolders",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -25,10 +29,7 @@ class File(models.Model):
     id = models.CharField(primary_key=True, max_length=32, default=hash, editable=False)
 
     folder = models.ForeignKey(
-        Folder,
-        related_name="files",
-        null=True, blank=True,
-        on_delete=models.CASCADE
+        Folder, related_name="files", null=True, blank=True, on_delete=models.CASCADE
     )
 
     name = models.CharField(max_length=255)
