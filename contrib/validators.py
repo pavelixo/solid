@@ -1,4 +1,5 @@
 import re
+from pathlib import Path
 from secrets import token_urlsafe
 
 from django.core import validators
@@ -32,13 +33,22 @@ class UsernameValidator(validators.RegexValidator):
 class FileUpload:
     EXT_REGEX = re.compile(r"\.([A-Za-z0-9]+)$")
 
+    def __init__(self, base_path="uploads"):
+        """
+        base_path: directory where files will be stored.
+        Example: 'avatars/', 'posts/images/', etc.
+        """
+        self.base_path = base_path.rstrip("/")
+
     def __call__(self, instance, filename):
         """
-        Generates the new filename using a random string and file extension.
+        Generates a random filename while preserving the file extension.
+        Combines the configured path with the generated filename.
         """
 
         match = self.EXT_REGEX.search(filename)
-        ext = match.group(1) if match else ""
-
+        ext = match.group(1).lower() if match else ""
         mark = token_urlsafe(16).lower()
-        return f"{mark}.{ext}" if ext else mark
+        new_filename = f"{mark}.{ext}" if ext else mark
+
+        return str(Path(self.base_path) / new_filename)
