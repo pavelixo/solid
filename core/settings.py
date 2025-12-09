@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "storages",  # django-storages
+    "django_tasks",
     "authentication",
     "storage",
 ]
@@ -61,6 +62,12 @@ DATABASES = {
     }
 }
 
+TASKS = {
+    "default": {
+        "BACKEND": "django_tasks.backends.database.DatabaseBackend",
+    },
+}
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -76,11 +83,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-TASKS = {
-    "default": {
-        "BACKEND": "django.tasks.backends.immediate.ImmediateBackend"
-    }
-}
 
 LANGUAGE_CODE = "en-us"
 
