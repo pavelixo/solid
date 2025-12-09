@@ -1,13 +1,39 @@
+from functools import reduce
+
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager, PermissionsMixin, User
 from django.core.mail import send_mail
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
 from contrib.validators import UsernameValidator
 
+
 class AbstractUserManager(BaseUserManager):
-    pass
+    @classmethod
+    def normalize_username(cls, username):
+        """
+        Normalize the given username by applying a series of transformations:
+        stripping whitespace and converting to lowercase.
+
+        Args:
+            username (str): The username to be normalized.
+
+        Returns:
+            str: The normalized username after applying all transformations.
+        """
+
+        normalization_functions = [
+            lambda string: string.strip(),
+            lambda string: string.lower(),
+        ]
+
+        normalized_username = reduce(
+            lambda acc, func: func(acc), normalization_functions, username
+        )
+
+        return normalized_username
 
 
 class AbstractUser(AbstractBaseUser, PermissionsMixin):
