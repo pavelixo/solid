@@ -51,8 +51,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "solid",
+        "USER": "admin",
+        "PASSWORD": "password",
+        "HOST": "localhost",
+        "PORT": 5432,
     }
 }
 
@@ -84,6 +88,8 @@ LOCALE_PATHS = [
 ]
 
 STATIC_URL = "static/"
+
+AUTH_USER_MODEL = "authentication.User"
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
