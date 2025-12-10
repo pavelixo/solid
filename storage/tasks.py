@@ -1,12 +1,11 @@
+from django.core.files.storage import default_storage
 from django.tasks import task
+
+from .models import File
 
 
 @task
 def upload(file_pk, temp_path, original_name, content_type):
-    from django.core.files.storage import default_storage
-
-    from .models import File
-
     file = File.objects.get(id=file_pk)
     key = f"users/{file.owner.pk}/files/{file_pk}"
     with open(temp_path, "rb") as f:
