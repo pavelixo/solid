@@ -5,12 +5,14 @@ from django.utils.translation import gettext_lazy as _
 
 from authentication.models import User
 
+hash = lambda: token_urlsafe(12)
+
 
 class Folder(models.Model):
     id = models.CharField(
         primary_key=True,
         max_length=32,
-        default=lambda: token_urlsafe(12),
+        default=hash,
         editable=False,
     )
     name = models.CharField(_("name"), max_length=255)
@@ -38,7 +40,7 @@ class File(models.Model):
     id = models.CharField(
         primary_key=True,
         max_length=32,
-        default=lambda: token_urlsafe(12),
+        default=hash,
         editable=False,
     )
 
