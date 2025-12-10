@@ -1,18 +1,16 @@
-from secrets import token_urlsafe
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from authentication.models import User
-
-hash = lambda: token_urlsafe(12)
+from contrib.hash import RandomHash
 
 
 class Folder(models.Model):
+    random_hash = RandomHash()
     id = models.CharField(
         primary_key=True,
         max_length=32,
-        default=hash,
+        default=random_hash,
         editable=False,
     )
     name = models.CharField(_("name"), max_length=255)
@@ -37,10 +35,11 @@ class Folder(models.Model):
 
 
 class File(models.Model):
+    random_hash = RandomHash()
     id = models.CharField(
         primary_key=True,
         max_length=32,
-        default=hash,
+        default=random_hash,
         editable=False,
     )
 
