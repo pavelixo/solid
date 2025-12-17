@@ -33,6 +33,9 @@ class Folder(models.Model):
         verbose_name = _("folder")
         verbose_name_plural = _("folders")
 
+    def __str__(self):
+        return self.name
+
 
 class File(models.Model):
     random_hash = RandomHash()
@@ -66,3 +69,6 @@ class File(models.Model):
     class Meta:
         verbose_name = _("file")
         verbose_name_plural = _("files")
+
+    def __str__(self):
+        return self.name
