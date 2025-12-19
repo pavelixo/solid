@@ -1,5 +1,7 @@
 from pathlib import Path
+
 from contrib.validators import FileUpload
+
 
 def test_file_upload_call_preserves_extension():
     uploader = FileUpload(base_path="documents")
@@ -7,13 +9,15 @@ def test_file_upload_call_preserves_extension():
     assert result.startswith("documents/")
     assert result.endswith(".pdf")
     filename_part = Path(result).name
-    assert len(filename_part) > 16 
+    assert len(filename_part) > 16
+
 
 def test_file_upload_call_without_extension():
     uploader = FileUpload(base_path="backups")
     result = uploader(None, "README")
     assert "." not in Path(result).name
     assert result.startswith("backups/")
+
 
 def test_file_upload_randomization():
     uploader = FileUpload(base_path="img")
@@ -23,6 +27,7 @@ def test_file_upload_randomization():
     assert res1 != res2
     assert res1.endswith(".jpg")
     assert res2.endswith(".jpg")
+
 
 def test_file_upload_base_path_strip():
     uploader = FileUpload(base_path="uploads///")

@@ -1,5 +1,7 @@
 import pytest
+
 from authentication.models import User
+
 
 @pytest.mark.django_db
 class TestUserManager:
@@ -7,7 +9,9 @@ class TestUserManager:
     def test_create_user_success(self):
         email = " test@EXAMPLE.COM "
         username = " TestUser "
-        user = User.objects.create_user(username=username, email=email, password="password123")
+        user = User.objects.create_user(
+            username=username, email=email, password="password123"
+        )
 
         assert user.email == "test@example.com"
         assert user.username == "testuser"
