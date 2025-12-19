@@ -7,3 +7,6 @@ exclude =
     .mypy_cache,
     .pytest_cache,
     migrations
+
+per-file-ignores =
+    core/settings/*.py: F401, F403, E402

@@ -1,12 +1,19 @@
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+import environ
 
-SECRET_KEY = "django-insecure-o8pu8ce*@sl0v665&en%#5qc%zho2#&6zm61m)9sk2b&s66+uy"
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-DEBUG = True
+env = environ.Env(
+    DEBUG=(bool, False),
+)
 
-ALLOWED_HOSTS = []
+DEBUG = env.bool("DEBUG")
+SECRET_KEY = env.str("SECRET_KEY")
+
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+
+# Apps
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -15,11 +22,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "storages",  # django-storages
+    "storages",
     "django_tasks.backends.database",
     "authentication",
     "storage",
 ]
+
+# Middleware
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -32,7 +41,12 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# Core
+
 ROOT_URLCONF = "core.urls"
+WSGI_APPLICATION = "core.wsgi.application"
+
+# Templates
 
 TEMPLATES = [
     {
@@ -49,18 +63,13 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "core.wsgi.application"
+# Database
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "solid",
-        "USER": "admin",
-        "PASSWORD": "password",
-        "HOST": "localhost",
-        "PORT": 5432,
-    }
+    "default": env.db("DATABASE_URL", default="sqlite:///db.sqlite3"),
 }
+
+# Django Tasks
 
 TASKS = {
     "default": {
@@ -68,39 +77,35 @@ TASKS = {
     },
 }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
-
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
-USE_I18N = True
-
-USE_TZ = True
-
-LOCALE_PATHS = [
-    BASE_DIR / "locale",
-]
+# Auth
 
 AUTH_USER_MODEL = "authentication.User"
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+
+# i18n
+
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
+
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
+# Static / Media
 
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = None
+
+# Storage (S3 / MinIO)
 
 STORAGES = {
     "default": {
@@ -111,13 +116,16 @@ STORAGES = {
     },
 }
 
-AWS_ACCESS_KEY_ID = "admin"
-AWS_SECRET_ACCESS_KEY = "password"
-AWS_STORAGE_BUCKET_NAME = "solid"
-AWS_S3_ENDPOINT_URL = "http://localhost:9000"
-AWS_S3_REGION_NAME = "us-east-1"
-AWS_S3_SIGNATURE_VERSION = "s3v4"
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-AWS_S3_VERIFY = False
-AWS_S3_ADDRESSING_STYLE = "path"
+AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("AWS_STORAGE_BUCKET_NAME")
+
+AWS_S3_ENDPOINT_URL = env("AWS_S3_ENDPOINT_URL", default=None)
+AWS_S3_REGION_NAME = env("AWS_S3_REGION_NAME", default=None)
+AWS_S3_SIGNATURE_VERSION = env("AWS_S3_SIGNATURE_VERSION", default="s3v4")
+
+AWS_S3_FILE_OVERWRITE = env.bool("AWS_S3_FILE_OVERWRITE", default=False)
+AWS_S3_VERIFY = env.bool("AWS_S3_VERIFY", default=True)
+
+AWS_DEFAULT_ACL = env("AWS_DEFAULT_ACL", default=None)
+AWS_S3_ADDRESSING_STYLE = env("AWS_S3_ADDRESSING_STYLE", default="auto")
