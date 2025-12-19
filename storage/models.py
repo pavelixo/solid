@@ -1,13 +1,18 @@
-from secrets import token_urlsafe
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from authentication.models import User
+from contrib.hash import RandomHash
 
 
 class Folder(models.Model):
-    id = models.CharField(primary_key=True, max_length=32, default=lambda: token_urlsafe(12), editable=False)
+    random_hash = RandomHash()
+    id = models.CharField(
+        primary_key=True,
+        max_length=32,
+        default=random_hash,
+        editable=False,
+    )
     name = models.CharField(_("name"), max_length=255)
     parent = models.ForeignKey(
         "self",
@@ -21,14 +26,25 @@ class Folder(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("owner"))
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("updated at"), auto_now=True)
+    is_deleted = models.BooleanField(_("is deleted"), default=False)
+    deleted_at = models.DateTimeField(_("deleted at"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("folder")
         verbose_name_plural = _("folders")
 
+    def __str__(self):
+        return self.name
+
 
 class File(models.Model):
-    id = models.CharField(primary_key=True, max_length=32, default=lambda: token_urlsafe(12), editable=False)
+    random_hash = RandomHash()
+    id = models.CharField(
+        primary_key=True,
+        max_length=32,
+        default=random_hash,
+        editable=False,
+    )
 
     folder = models.ForeignKey(
         Folder,
@@ -36,7 +52,7 @@ class File(models.Model):
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        verbose_name=_("folder")
+        verbose_name=_("folder"),
     )
 
     name = models.CharField(_("name"), max_length=255)
@@ -47,7 +63,12 @@ class File(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_("owner"))
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("updated at"), auto_now=True)
+    is_deleted = models.BooleanField(_("is deleted"), default=False)
+    deleted_at = models.DateTimeField(_("deleted at"), null=True, blank=True)
 
     class Meta:
         verbose_name = _("file")
         verbose_name_plural = _("files")
+
+    def __str__(self):
+        return self.name

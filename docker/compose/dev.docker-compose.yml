@@ -1,21 +1,21 @@
 services:
-  postgres:
+  database:
     image: postgres:16
-    container_name: postgres
+    container_name: database
     restart: always
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: solid
+      POSTGRES_DB: dev
     ports:
       - "5432:5432"
     volumes:
-      - data:/var/lib/postgresql/data
+      - dev_database:/var/lib/postgresql/data
 
   storage:
     image: minio/minio
     command: server /data --console-address ":9001"
-    container_name: minio_server
+    container_name: storage
     ports:
       - "9000:9000"   # API S3
       - "9001:9001"   # Dashboard
@@ -23,8 +23,8 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: password
     volumes:
-      - storage:/data
+      - dev_storage:/data
 
 volumes:
-  data:
-  storage:
+  dev_database:
+  dev_storage:
